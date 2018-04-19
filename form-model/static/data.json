@@ -1,0 +1,100 @@
+{
+    "data": [
+        {
+            "key": "is_show_video",
+            "type": "checkbox",
+            "description": "是否显示语音视频",
+            "label": "语音视频",
+            "value": false
+        },
+        {
+            "key": "is_hide_btn_mkfrd",
+            "type": "checkbox",
+            "description": "是否显示加好友按钮",
+            "label": "显示好友",
+            "value": false
+        },
+       
+        {
+            "key": "register",
+            "type": "modelCheckBox",
+            "description": "是否开启注册,值为true或传入指定字符串为开启 ",
+            "label": "是否开启注册",
+            "value": false,
+            "list": [
+                {
+                    "description": "短信验证",
+                    "argument": "sms",
+                    "order": 1,
+                    "fixed": false
+                },
+                {
+                    "description": "设置密码",
+                    "argument": "password",
+                    "order": 2,
+                    "fixed": false
+                },
+                {
+                    "description": "个人信息",
+                    "argument": "personal",
+                    "order": 3,
+                    "fixed": false
+                },
+                {
+                    "description": "常用区域",
+                    "argument": "position",
+                    "order": 4,
+                    "fixed": true
+                }
+            ]
+        
+        },
+        {
+            "type": "radio",
+            "options": [
+                {
+                    "key": "sms_forgot_password",
+                    "description": "是否开启通过手机号找回密码",
+                    "label":"通过手机号找回密码",
+                    "value": true
+                },
+                {
+                    "key": "login_name_forgot_password",
+                    "description": "是否开启通过登录账号找回密码",
+                    "label":"登录账号找回密码",
+                    "value": false
+                }
+            ],
+            "value": true
+        },
+        {
+            "key": "whitelist",
+            "type": "inputUrl",
+            "description": "外网白名单",
+            "label": "外网白名单",
+            "whitelist": [""]
+        },
+        {
+            "key": "news_title",
+            "type": "input",
+            "description": "设置新闻标题",
+            "label": "设置新闻标题",
+            "value": ""
+        },
+        {
+            "key": "internal",
+            "type": "select",
+            "description": "内外网切换",
+             "options":[
+                 
+                 {"value":1,"label":"内外"},
+                 {"value":2,"label":"外网"}
+             ],
+             "value":2
+        }
+       
+       
+       
+       
+    ]
+}
