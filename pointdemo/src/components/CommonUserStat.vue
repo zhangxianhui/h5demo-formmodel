@@ -5,7 +5,6 @@
         </div>
         <div class="date-box">
             <span class="demonstration">选择时间：</span>
-            {{start}}
             <el-date-picker v-model="start" type="date" placeholder="开始日期":picker-options="startDate"  value-format="timestamp">
             </el-date-picker>
             <span class="zhi">至</span>
@@ -14,29 +13,15 @@
             <span class="span-btn">查询</span>
         </div>
         <div>
-            <el-table :data="tableData" style="width: 100%" stripe @sort-change="handleSortChange">
+            <el-table :data="list" style="width: 100%" stripe  @sort-change="handleSortChange" :default-sort="{prop: tableData.type, order: tableData.order}">
                 <el-table-column prop="name" label="姓名"> </el-table-column>              
                 <el-table-column prop="read" label="新闻阅读数" sortable="false"></el-table-column>               
                 <el-table-column prop="comment" label="评论数" sortable="false"> </el-table-column>              
-                <el-table-column prop="total"label="合计"> </el-table-column>                                 
+                <el-table-column prop="count"label="合计"></el-table-column>                                 
 		        </el-table>
-                <el-pagination background @current-change="handleCurrentChange" :current-page="currentPage" :total="tableData.length" layout="total, prev, pager, next, jumper">
+                 <el-pagination background @current-change="handleCurrentChange" :current-page="tableData.pageNum" :page-size="tableData.pageSize" :total="total" layout="total, prev, pager, next, jumper">
 		        </el-pagination>
         </div>
-        <model :show="isShowMOdel" @close="close" @save="save">
-          <div slot="model-header">兑换设置</div>
-          <div class="model-cont">
-            <p class="model-span"><span>每次兑换扣除本次设置的积分数值</span></p>
-            <p><input type="text" placeholder="请输入需要设置的积分兑换值" class="point-input" v-model="Pointinput"></p>
-          </div>
-        </model>
-        <model :show="isShowConvert" @close="close" @save="save">
-          <div slot="model-header">兑换积分确认</div>
-          <div>
-            <p>本次兑换需要扣除<span>{{pointValue}}</span></p>
-          </div>
-        </model>
-      
   </div>
 </template>
 <script>
@@ -45,46 +30,23 @@ export default {
   components:{
     Model
   },
-  data() {
-    return {
-      tableData: [
-        {
-          name: "王建国",
-          red: "王建国",
-          comment: 1,
-          total: "100"
-        }, {
-          name: "王建国",
-          red: "王建国",
-          comment: 1,
-          total: "100"
-        },
-         {
-          name: "王建国",
-          red: "王建国",
-          comment: 1,
-          total: "100"
-        },
-         {
-          name: "王建国",
-          red: "王建国",
-          comment: 1,
-          total: "100"
-        },
-       
-      ],
-      pagesize: 10, //每页的数据条数
-      currentPage: 1, //默认开始页面,
-      isShowMOdel:false,
-      isShowConvert:false,
-      pointValue:500,
-      Pointinput:'',
-      initalQuery: {
-        page:1,
-        limit:10
-      },
-        start: '',
-        end: '',
+   data() {
+    const d = this.getDataByRoute();
+    console.log('dddd =>', d);
+   
+
+    const ret = {
+        list: [],
+        total: 100,
+        tableData: d,
+        isShowMOdel: false,
+        isShowConvert: false,
+        pointValue: "100",
+        Pointinput: "",
+        userId: "",
+        initOrder: {},
+        start:"",
+        end:"",
         startDate: {
             disabledDate: (time) => {
                 if (this.end != "") {
@@ -92,73 +54,100 @@ export default {
                 } else {
                     return time.getTime() > Date.now();
                 }
-
             }
         },
         endDate: {
             disabledDate: (time) => {
                 return time.getTime() < this.start || time.getTime() > Date.now();
             }
+            
         },
     };
+    console.log('data ->', ret);
+    return ret;
+  },
+  created(){
+    // let arg = this.$route.query;
+    //  this.getlist(arg);
+     
+   
   },
   methods: {
-    //跳页
-    handleCurrentChange: function(currentPage) {
-      const query = this.$route.query;
-      console.log('query', query)
-      const newQuery = {
-        ...query,
-        ...this.initalQuery,
-        page: currentPage
-      }
-      console.log('newQuery', newQuery)      
-       this.changeRoute(newQuery);
+    
+    //分页
+    handleCurrentChange: function(pageNum) {
+      console.log("page===>", pageNum)
+        const vm = this;
+        const newQuery = {
+            pageSize: vm.tableData.pageSize,
+            pageNum,
+        }
+        vm.tableData.type && (newQuery.type = vm.tableData.type);
+        vm.tableData.order && (newQuery.order = vm.tableData.order === 'ascending' ? 0 : 1);
+        this.changeRoute(newQuery);
     },
     //点击排序
-    handleSortChange: function({prop, order}) {
+    handleSortChange: function({ column, prop, order }) {
 
-      const query = this.$route.query;
-      const newQuery = prop
-      ? {
-          ...query,
-          ...this.initalQuery,
-          page: 1,
-          orderBy: prop,
-          desc: order === "ascending" ? 0 : 1
-      }: this.initalQuery
-      this.changeRoute(newQuery);
+        const vm = this;
+        if (prop === vm.tableData.type && vm.tableData.type === order) return;
+        const newQuery = { pageNum: 1, pageSize: vm.tableData.pageSize };
+        if (prop) {
+            newQuery.type = prop;
+            newQuery.order = order === 'ascending' ? '0' : '1';        
+        }
+        this.changeRoute(newQuery);
     },
     //监听路由方法
     changeRoute(query) {
-      this.$router.push({query})
+      this.$router.push({ query });
     },
     routeChange(query) {
+        console.log('query change!', query);
+        const arg = query.query
+         console.log('arg change!', arg);
+        this.tableData = this.getDataByRoute();
       //发送请求这里
-      console.log('route change', query)
+        this.getlist(arg);
     },
-    //点击设置 弹框
-    setPoint(){
-      this.isShowMOdel = true
+    getDataByRoute() {
+        const query = this.$route.query;
+        const pageNum = query.pageNum ? Number(query.pageNum) : 1; //currentPage  当前页
+        const pageSize = query.pageSize ? Number(query.pageSize) : 20;  //limit  每页条数
+        const type = query.type || ''; // order  排序类型
+        const order = query.hasOwnProperty('order') // descString   desc 排序字段 0 降 1 升
+            ? query.order == 0
+                ? 'ascending'
+                : 'descending'
+            : '';
+        return {
+            pageNum,
+            pageSize,
+            type,
+            order
+        }
     },
-    close(){
-      this.isShowMOdel = false
-      this.isShowConvert = false
+    //请求列表
+    getlist(arg) {
+      this.$get(`ordinaryUser`, arg).then(response => {
+        this.list = response.vos;
+        this.total = response.total;
+        console.log("=================列表=====", response);
+      });
+      console.log("请求", arg);
     },
-    save(){
-       this.isShowMOdel = false
-       this.pointValue = this.Pointinput
-        this.isShowConvert = false
-    },
+   
     //操作 兑换
-     handleConvert(index, row) {
-        console.log(index, row);
-         this.isShowConvert = true
-      },
+    handleConvert(index, row) {
+      this.userId = row.id;
+      console.log(index, row);
+      this.isShowConvert = true;
+    },
+   
   },
   watch: {
     //监听路由变化调用方法
-    '$route': 'routeChange'
+    $route: "routeChange"
   }
 };
 </script>

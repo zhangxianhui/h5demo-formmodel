@@ -1,36 +1,38 @@
 <template>
   <div class="wrap">
-       <div class="title-box">
-            <p class="title">积分管理</p>
-            <p class="point-span"><span>积分兑换值</span><span>{{pointValue}}</span> <span class="set" @click="setPoint">设置</span></p>
-       </div>
+        <div class="title-box">
+            <p class="title">特殊用户统计</p>
+        </div>
+        <div class="date-box">
+            <span class="demonstration">选择时间：</span>
+            {{start}}
+            <el-date-picker v-model="start" type="date" placeholder="开始日期":picker-options="startDate"  value-format="timestamp">
+            </el-date-picker>
+            <span class="zhi">至</span>
+            <el-date-picker v-model="end" type="date" placeholder="结束日期" :picker-options="endDate" value-format="timestamp">
+            </el-date-picker>
+            <span class="span-btn">查询</span>
+        </div>
         <div>
             <el-table :data="list" style="width: 100%" stripe  @sort-change="handleSortChange" :default-sort="{prop: tableData.type, order: tableData.order}">
-                <el-table-column prop="name" label="姓名">
-                </el-table-column>
-                <el-table-column prop="shortName" label="部门">
-                </el-table-column>
-                <el-table-column prop="integral" label="积分" sortable="false">
-                  
-                </el-table-column>
-                <el-table-column  label="操作">
-                    <template slot-scope="scope">
-                        <span @click="handleConvert(scope.$index, scope.row)" class="handle">兑换</span>
-                    </template>
-                </el-table-column>
+                <el-table-column prop="name" label="姓名"> </el-table-column>              
+                <el-table-column prop="read" label="阅读数" sortable="false"></el-table-column>               
+                <el-table-column prop="comment" label="评论数" sortable="false"> </el-table-column> 
+                <el-table-column prop="comment" label="转发数" sortable="false"> </el-table-column>  
+                <el-table-column prop="count1" label="转发+评论"> </el-table-column>              
+                <el-table-column prop="count2"label="总合计"> </el-table-column>                                 
 		        </el-table>
-                <el-pagination background @current-change="handleCurrentChange" :current-page="tableData.pageNum" :page-size="tableData.pageSize" :total="total" layout="total, prev, pager, next, jumper">
+                 <el-pagination background @current-change="handleCurrentChange" :current-page="tableData.pageNum" :page-size="tableData.pageSize" :total="total" layout="total, prev, pager, next, jumper">
 		        </el-pagination>
         </div>
-        <model :show="isShowMOdel" @close="close" @save="setPointSave">
+        <model :show="isShowMOdel" @close="close" @save="save">
           <div slot="model-header">兑换设置</div>
           <div class="model-cont">
             <p class="model-span"><span>每次兑换扣除本次设置的积分数值</span></p>
             <p><input type="text" placeholder="请输入需要设置的积分兑换值" class="point-input" v-model="Pointinput"></p>
           </div>
         </model>
-
-        <model :show="isShowConvert" @close="close" @save="convertsave">
+        <model :show="isShowConvert" @close="close" @save="save">
           <div slot="model-header">兑换积分确认</div>
           <div>
             <p>本次兑换需要扣除<span>{{pointValue}}</span></p>
@@ -42,10 +44,10 @@
 <script>
 import Model from "@/components/Model";
 export default {
-  components: {
+  components:{
     Model
   },
-  data() {
+   data() {
     const d = this.getDataByRoute();
     console.log('dddd =>', d);
     const ret = {
@@ -63,9 +65,9 @@ export default {
     return ret;
   },
   created(){
-    let arg = this.$route.query;
-     this.getlist(arg);
-     this.initPoint()
+    // let arg = this.$route.query;
+    //  this.getlist(arg);
+    //  this.initPoint()
    
   },
   methods: {
@@ -124,7 +126,7 @@ export default {
     },
     //请求列表
     getlist(arg) {
-      this.$get(`queryList`, arg).then(response => {
+      this.$get(`ordinaryUser`, arg).then(response => {
         this.list = response.vos;
         this.total = response.total;
         console.log("=================列表=====", response);
@@ -213,6 +215,7 @@ export default {
   user-select: none;
   text-align: left;
   background: #2269b3;
+ 
 }
 .el-pagination {
   white-space: nowrap;
@@ -221,15 +224,14 @@ export default {
   font-weight: 1000;
   margin: 50px 20px;
 }
-.el-table td,
-.el-table th {
-  padding: 6px 0;
-  min-width: 0;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-  position: relative;
+.el-table td, .el-table th {
+    padding: 6px 0;
+    min-width: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    position: relative;
 }
 
 </style>
@@ -245,7 +247,9 @@ export default {
 }
 .title-box {
   border-bottom: 1px solid #cccccc;
-  margin-bottom: 20px;
+ margin-bottom: 20px;
+ 
+ 
 }
 .point-span {
   margin-top: -6px;
@@ -265,19 +269,34 @@ export default {
   cursor: pointer;
   text-align: center;
 }
-.point-input {
-  outline: none;
-  padding: 10px 0 10px 5px;
-  width: 80%;
-  border: 1px solid #ccc;
+.point-input{
+   outline: none;
+   padding:10px 0 10px  5px;
+   width:80%;
+   border:1px solid #ccc;
 }
-.model-span {
-  text-align: left;
-  margin-left: 10%;
-  color: red;
+.model-span{
+   text-align:left;
+   margin-left:10%;
+   color:red
 }
-.handle {
+.date-box{
+    text-align:left;
+    margin-bottom:20px;
+}
+.zhi{
+    margin:0 5px;
+}
+.span-btn {
+  display: inline-block;
+  width: 60px;
+  height: 35px;
+  line-height: 35px;
+  background: #307dcd;
+  border-radius: 5px;
+  color: #f1f6fc;
   cursor: pointer;
+  text-align: center;
 }
 </style>
 
