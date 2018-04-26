@@ -4,25 +4,7 @@
           <p class="title">特殊用户管理</p>
            <p class="point-span"><input type="text" placeholder="输入姓名和拼音"> <span class="span-btn" >添加</span></p>
         </div>
-        <div>
-            <el-table :data="tableData" style="width: 100%" stripe >
-                <el-table-column prop="name" label="姓名">
-                </el-table-column>
-                <el-table-column prop="section" label="部门">
-                </el-table-column>
-                <el-table-column prop="job" label="职务" >
-                </el-table-column>
-                 <el-table-column prop="tel" label="电话" >
-                </el-table-column>
-                <el-table-column  label="操作">
-                    <template slot-scope="scope">
-                        <span @click="handleDel(scope.$index, scope.row)" class="handle">删除</span>
-                    </template>
-                </el-table-column>
-		        </el-table>
-            <el-pagination background @current-change="handleCurrentChange" :current-page="currentPage" :total="tableData.length" layout="total, prev, pager, next, jumper">
-		        </el-pagination>
-        </div>
+      
        
       
   </div>
@@ -35,80 +17,12 @@ export default {
   },
   data() {
     return {
-      tableData: [
-        {
-          name: "王建国",
-          section: "王建国",
-          job: 1,
-          tel: 1234567890,
-          handle: "删除"
-        },
+    
 
-        {
-          name: "司马",
-          section: "司马",
-          job: 1,
-          tel: 1234567890,
-          handle: "删除"
-        },
-        {
-          name: "诸葛",
-          section: "诸葛",
-          job: 1,
-          tel: 1234567890,
-          handle: "删除"
-        },
-        {
-          name: "欧阳",
-          section: "欧阳",
-          job: 1,
-          tel: 1234567890,
-          handle: "删除"
-        },
-        {
-          name: "公孙",
-          section: "公孙",
-          job: 1,
-          tel: 1234567890,
-          handle: "删除"
-        }
-      ],
-      pagesize: 10, //每页的数据条数
-      currentPage: 1, //默认开始页面,
-      isPonit: false,
-      pointValue: 500,
-      Pointinput: "",
-      initalQuery: {
-        page: 1,
-        limit: 10
-      }
-    };
+    }
   },
   methods: {
-    //跳页
-    handleCurrentChange: function(currentPage) {
-      const query = this.$route.query;
-      console.log("query", query);
-      const newQuery = {
-        ...query,
-        ...this.initalQuery,
-        page: currentPage
-      };
-      console.log("newQuery", newQuery);
-      this.changeRoute(newQuery);
-    },
-    //监听路由方法
-    changeRoute(query) {
-      this.$router.push({ query });
-    },
-    routeChange(query) {
-      //发送请求这里
-      console.log("route change", query);
-    },
-    //删除
-    handleDel(index,row){
-        console.log(index,row)
-    }
+   
   },
   watch: {
     //监听路由变化调用方法

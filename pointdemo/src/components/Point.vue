@@ -5,22 +5,21 @@
             <p class="point-span"><span>积分兑换值</span><span>{{pointValue}}</span> <span class="set" @click="setPoint">设置</span></p>
        </div>
         <div>
-            <el-table :data="list" style="width: 100%" stripe  @sort-change="handleSortChange" :default-sort="{prop: tableData.type, order: tableData.order}">
+            <el-table :data="list" style="width: 100%" stripe  @sort-change="handleSortChange" :default-sort="{prop: tableData.type, order: tableData.descString}">
                 <el-table-column prop="name" label="姓名">
                 </el-table-column>
                 <el-table-column prop="shortName" label="部门">
                 </el-table-column>
                 <el-table-column prop="integral" label="积分" sortable="false">
-                  
                 </el-table-column>
                 <el-table-column  label="操作">
                     <template slot-scope="scope">
                         <span @click="handleConvert(scope.$index, scope.row)" class="handle">兑换</span>
                     </template>
                 </el-table-column>
-		        </el-table>
-                <el-pagination background @current-change="handleCurrentChange" :current-page="tableData.pageNum" :page-size="tableData.pageSize" :total="total" layout="total, prev, pager, next, jumper">
-		        </el-pagination>
+            </el-table>
+            <el-pagination background @current-change="handleCurrentChange" :current-page="tableData.pageNum" :page-size="tableData.pageSize" :total="total" layout="total, prev, pager, next, jumper">
+            </el-pagination>
         </div>
         <model :show="isShowMOdel" @close="close" @save="setPointSave">
           <div slot="model-header">兑换设置</div>
@@ -64,34 +63,35 @@ export default {
   },
   created(){
     let arg = this.$route.query;
+    console.log("刷新",arg)
      this.getlist(arg);
      this.initPoint()
-   
   },
   methods: {
     //分页
-    handleCurrentChange: function(pageNum) {
-      console.log("page===>", pageNum)
+    handleCurrentChange: function(page) {
+      console.log("page===>", page)
         const vm = this;
         const newQuery = {
+            pageNum:page,
             pageSize: vm.tableData.pageSize,
-            pageNum,
+            
         }
         vm.tableData.type && (newQuery.type = vm.tableData.type);
-        vm.tableData.order && (newQuery.order = vm.tableData.order === 'ascending' ? 0 : 1);
+        vm.tableData.descString && (newQuery.order = vm.tableData.descString === 'ascending' ? 0 : 1);
         this.changeRoute(newQuery);
     },
     //点击排序
     handleSortChange: function({ column, prop, order }) {
-
         const vm = this;
-        if (prop === vm.tableData.type && vm.tableData.type === order) return;
+        if (prop === vm.tableData.type && vm.tableData.descString === order) return;
         const newQuery = { pageNum: 1, pageSize: vm.tableData.pageSize };
         if (prop) {
             newQuery.type = prop;
             newQuery.order = order === 'ascending' ? '0' : '1';        
         }
         this.changeRoute(newQuery);
+        console.log("newQuery===>",newQuery)
     },
     //监听路由方法
     changeRoute(query) {
@@ -103,14 +103,15 @@ export default {
          console.log('arg change!', arg);
         this.tableData = this.getDataByRoute();
       //发送请求这里
-        this.getlist(arg);
+       this.getlist(arg);
     },
     getDataByRoute() {
         const query = this.$route.query;
+        console.log("数据变化====》",query)
         const pageNum = query.pageNum ? Number(query.pageNum) : 1; //currentPage  当前页
         const pageSize = query.pageSize ? Number(query.pageSize) : 20;  //limit  每页条数
         const type = query.type || ''; // order  排序类型
-        const order = query.hasOwnProperty('order') // descString   desc 排序字段 0 降 1 升
+        const descString = query.hasOwnProperty('order') // descString   desc 排序字段 0 降 1 升
             ? query.order == 0
                 ? 'ascending'
                 : 'descending'
@@ -119,7 +120,7 @@ export default {
             pageNum,
             pageSize,
             type,
-            order
+            descString
         }
     },
     //请求列表
@@ -127,7 +128,7 @@ export default {
       this.$get(`queryList`, arg).then(response => {
         this.list = response.vos;
         this.total = response.total;
-        console.log("=================列表=====", response);
+        console.log("=========列表=====", response);
       });
       console.log("请求", arg);
     },

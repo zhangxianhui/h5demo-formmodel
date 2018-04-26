@@ -1,9 +1,14 @@
 import axios from 'axios';
-axios.defaults.baseURL = '/api/api/v2/integral/';
+// axios.defaults.baseURL = '/api/api/v2/integral/';
+const  instance = axios.create({
+  baseURL: '/api/api/v2/integral/',
+  timeout: 10000,
+  
+});
 export function get(url, params) {
   console.log("get请求", url)
   return new Promise((resolve, reject) => {
-    axios.get(url, {
+    instance.get(url, {
         params: params,
 
       })
@@ -18,7 +23,7 @@ export function get(url, params) {
 export function put(url, data) {
   return new Promise((resolve, reject) => {
     console.log("put请求", url)
-    axios.put(url,data)
+    instance.put(url,data)
     .then(response => {
 
       resolve(response.data);

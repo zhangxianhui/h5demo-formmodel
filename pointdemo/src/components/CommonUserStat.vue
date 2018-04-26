@@ -5,36 +5,34 @@
         </div>
         <div class="date-box">
             <span class="demonstration">选择时间：</span>
-            <el-date-picker v-model="start" type="date" placeholder="开始日期":picker-options="startDate"  value-format="timestamp">
+            <el-date-picker v-model="timeStart" type="datetime" placeholder="开始日期":picker-options="startDate"  value-format="timestamp">
             </el-date-picker>
             <span class="zhi">至</span>
-            <el-date-picker v-model="end" type="date" placeholder="结束日期" :picker-options="endDate" value-format="timestamp">
+            <el-date-picker v-model="timeEnd" type="datetime" placeholder="结束日期" :picker-options="endDate" value-format="timestamp">
             </el-date-picker>
-            <span class="span-btn">查询</span>
+            <span class="span-btn" @click="search">查询</span>
         </div>
         <div>
-            <el-table :data="list" style="width: 100%" stripe  @sort-change="handleSortChange" :default-sort="{prop: tableData.type, order: tableData.order}">
+            <el-table :data="list" style="width: 100%" stripe  @sort-change="handleSortChange" :default-sort="{prop: tableData.type, order: tableData.descString}">
                 <el-table-column prop="name" label="姓名"> </el-table-column>              
                 <el-table-column prop="read" label="新闻阅读数" sortable="false"></el-table-column>               
                 <el-table-column prop="comment" label="评论数" sortable="false"> </el-table-column>              
                 <el-table-column prop="count"label="合计"></el-table-column>                                 
-		        </el-table>
-                 <el-pagination background @current-change="handleCurrentChange" :current-page="tableData.pageNum" :page-size="tableData.pageSize" :total="total" layout="total, prev, pager, next, jumper">
-		        </el-pagination>
+            </el-table>
+            <el-pagination background @current-change="handleCurrentChange" :current-page="tableData.pageNum" :page-size="tableData.pageSize" :total="total" layout="total, prev, pager, next, jumper">
+            </el-pagination>
         </div>
   </div>
 </template>
 <script>
 import Model from "@/components/Model";
 export default {
-  components:{
+  components: {
     Model
   },
-   data() {
+  data() {
     const d = this.getDataByRoute();
-    console.log('dddd =>', d);
-   
-
+    console.log("dddd =>", d);
     const ret = {
         list: [],
         total: 100,
@@ -45,105 +43,112 @@ export default {
         Pointinput: "",
         userId: "",
         initOrder: {},
-        start:"",
-        end:"",
+        timeStart: "",
+        timeEnd: "",
         startDate: {
             disabledDate: (time) => {
-                if (this.end != "") {
-                    return time.getTime() > Date.now() || time.getTime() > this.end;
-                } else {
-                    return time.getTime() > Date.now();
+                    let beginDateVal = this.timeEnd;
+                    if (beginDateVal) {
+                        return time.getTime() > beginDateVal;
+                    }
                 }
-            }
         },
         endDate: {
             disabledDate: (time) => {
-                return time.getTime() < this.start || time.getTime() > Date.now();
-            }
-            
-        },
+                    let beginDateVal = this.timeStart;
+                    if (beginDateVal) {
+                        return time.getTime() < beginDateVal;
+                    }
+                }
+        }
     };
-    console.log('data ->', ret);
+    console.log("data ->", ret);
     return ret;
   },
-  created(){
-    // let arg = this.$route.query;
-    //  this.getlist(arg);
-     
-   
+  created() {
+    let arg = this.$route.query;
+    this.getlist(arg);
   },
   methods: {
-    
     //分页
-    handleCurrentChange: function(pageNum) {
-      console.log("page===>", pageNum)
-        const vm = this;
-        const newQuery = {
-            pageSize: vm.tableData.pageSize,
-            pageNum,
-        }
-        vm.tableData.type && (newQuery.type = vm.tableData.type);
-        vm.tableData.order && (newQuery.order = vm.tableData.order === 'ascending' ? 0 : 1);
-        this.changeRoute(newQuery);
+    handleCurrentChange: function(page) {
+      console.log("page===>", page);
+      const vm = this;
+      const newQuery = {
+        pageNum: page,
+        pageSize: vm.tableData.pageSize
+      };
+      vm.tableData.type && (newQuery.type = vm.tableData.type);
+      vm.tableData.descString &&
+        (newQuery.order = vm.tableData.descString === "ascending" ? 0 : 1);
+      this.changeRoute(newQuery);
     },
     //点击排序
     handleSortChange: function({ column, prop, order }) {
-
-        const vm = this;
-        if (prop === vm.tableData.type && vm.tableData.type === order) return;
-        const newQuery = { pageNum: 1, pageSize: vm.tableData.pageSize };
-        if (prop) {
-            newQuery.type = prop;
-            newQuery.order = order === 'ascending' ? '0' : '1';        
-        }
-        this.changeRoute(newQuery);
+      const vm = this;
+      if (prop === vm.tableData.type && vm.tableData.descString === order)
+        return;
+      const newQuery = { pageNum: 1, pageSize: vm.tableData.pageSize };
+      if (prop) {
+        newQuery.type = prop;
+        newQuery.order = order === "ascending" ? "0" : "1";
+      }
+      this.changeRoute(newQuery);
+      console.log("newQuery===>", newQuery);
     },
     //监听路由方法
     changeRoute(query) {
       this.$router.push({ query });
     },
     routeChange(query) {
-        console.log('query change!', query);
-        const arg = query.query
-         console.log('arg change!', arg);
-        this.tableData = this.getDataByRoute();
+      console.log("query change!", query);
+      const arg = query.query;
+      console.log("arg change!", arg);
+      this.tableData = this.getDataByRoute();
       //发送请求这里
-        this.getlist(arg);
+      this.getlist(arg);
     },
     getDataByRoute() {
-        const query = this.$route.query;
-        const pageNum = query.pageNum ? Number(query.pageNum) : 1; //currentPage  当前页
-        const pageSize = query.pageSize ? Number(query.pageSize) : 20;  //limit  每页条数
-        const type = query.type || ''; // order  排序类型
-        const order = query.hasOwnProperty('order') // descString   desc 排序字段 0 降 1 升
-            ? query.order == 0
-                ? 'ascending'
-                : 'descending'
-            : '';
-        return {
-            pageNum,
-            pageSize,
-            type,
-            order
-        }
+      const query = this.$route.query;
+      console.log("数据变化====》", query);
+      const pageNum = query.pageNum ? Number(query.pageNum) : 1; //currentPage  当前页
+      const pageSize = query.pageSize ? Number(query.pageSize) : 20; //limit  每页条数
+      const type = query.type || ""; // order  排序类型
+      const descString = query.hasOwnProperty("order") // descString   desc 排序字段 0 降 1 升
+        ? query.order == 0 ? "ascending" : "descending"
+        : "";
+      const timeStart = this.timeStart;
+      const timeEnd = this.timeEnd;
+      return {
+        pageNum,
+        pageSize,
+        type,
+        descString,
+        timeStart,
+        timeEnd
+      };
+    },
+    search() {
+      const arg = this.getDataByRoute();
+      console.log("查询", arg);
+      this.getlist(arg);
     },
     //请求列表
     getlist(arg) {
-      this.$get(`ordinaryUser`, arg).then(response => {
+        this.$get(`ordinaryUser`, arg).then(response => {
         this.list = response.vos;
         this.total = response.total;
         console.log("=================列表=====", response);
       });
-      console.log("请求", arg);
+        console.log("请求", arg);
     },
-   
+
     //操作 兑换
     handleConvert(index, row) {
-      this.userId = row.id;
-      console.log(index, row);
-      this.isShowConvert = true;
-    },
-   
+        this.userId = row.id;
+        console.log(index, row);
+        this.isShowConvert = true;
+    }
   },
   watch: {
     //监听路由变化调用方法
@@ -173,7 +178,6 @@ export default {
   user-select: none;
   text-align: left;
   background: #2269b3;
- 
 }
 .el-pagination {
   white-space: nowrap;
@@ -182,16 +186,16 @@ export default {
   font-weight: 1000;
   margin: 50px 20px;
 }
-.el-table td, .el-table th {
-    padding: 6px 0;
-    min-width: 0;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    text-overflow: ellipsis;
-    vertical-align: middle;
-    position: relative;
+.el-table td,
+.el-table th {
+  padding: 6px 0;
+  min-width: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  position: relative;
 }
-
 </style>
 
 <style scoped>
@@ -205,9 +209,7 @@ export default {
 }
 .title-box {
   border-bottom: 1px solid #cccccc;
- margin-bottom: 20px;
- 
- 
+  margin-bottom: 20px;
 }
 .point-span {
   margin-top: -6px;
@@ -227,23 +229,23 @@ export default {
   cursor: pointer;
   text-align: center;
 }
-.point-input{
-   outline: none;
-   padding:10px 0 10px  5px;
-   width:80%;
-   border:1px solid #ccc;
+.point-input {
+  outline: none;
+  padding: 10px 0 10px 5px;
+  width: 80%;
+  border: 1px solid #ccc;
 }
-.model-span{
-   text-align:left;
-   margin-left:10%;
-   color:red
+.model-span {
+  text-align: left;
+  margin-left: 10%;
+  color: red;
 }
-.date-box{
-    text-align:left;
-    margin-bottom:20px;
+.date-box {
+  text-align: left;
+  margin-bottom: 20px;
 }
-.zhi{
-    margin:0 5px;
+.zhi {
+  margin: 0 5px;
 }
 .span-btn {
   display: inline-block;
