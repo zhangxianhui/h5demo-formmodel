@@ -34,6 +34,9 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     host: HOST || config.dev.host,
     port: PORT || config.dev.port,
     open: config.dev.autoOpenBrowser,
+    //添加token 时需要
+    // before: config.dev.before,
+    // after: config.dev.after,
     overlay: config.dev.errorOverlay
       ? { warnings: false, errors: true }
       : false,

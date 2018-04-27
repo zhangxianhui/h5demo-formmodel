@@ -63,8 +63,8 @@ export default {
   created(){
     let arg = this.$route.query;
     console.log("刷新",arg)
-    //  this.getlist(arg);
-    //  this.initPoint()
+      this.getlist(arg);
+      this.initPoint()
   },
   methods: {
     //分页
@@ -102,7 +102,7 @@ export default {
          console.log('arg change!', arg);
         this.tableData = this.getDataByRoute();
       //发送请求这里
-      //  this.getlist(arg);
+      this.getlist(arg);
     },
     getDataByRoute() {
         const query = this.$route.query;
@@ -147,7 +147,8 @@ export default {
     setPointSave() {
       this.isShowMOdel = false;
       this.pointValue = this.Pointinput;
-      this.getsetPoint();
+      
+       this.getsetPoint();
     },
     //请求设置积分接口
     getsetPoint() {
@@ -162,12 +163,24 @@ export default {
     getConver() {
       console.log("积分兑换请求", this.userId);
       console.log("积分兑换请求", this.pointValue);
-      this.$put(
-        `removeUserIntegralByUserId?userId=${this.userId}&integral=${
-          this.pointValue
-        }`
-      ).then(response => {
+     
+      this.$put(`removeUserIntegralByUserId?userId=${this.userId}&integral=${this.pointValue}`).then(
+        response => {
         console.log("======================", response);
+        // console.log(response.errors.message);
+        if(response.errors){
+           this.$message({
+            showClose: true,
+            message:response.errors.message,
+             type: 'warning'
+           });
+        }else{
+           this.$message({
+             showClose: true,
+            message:response.message,
+            type: 'success'
+           });
+        }
       });
     },
     //初始化积分值

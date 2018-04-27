@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-
 import Theme from '@/components/Theme'
 import Point from '@/components/Point'
 import CommonUserStat from '@/components/CommonUserStat'
@@ -15,7 +13,6 @@ export default new Router({
       // name: 'Theme',
       component: Theme,
       children:[
-
         {
           path:"",
           redirect:"Point"
