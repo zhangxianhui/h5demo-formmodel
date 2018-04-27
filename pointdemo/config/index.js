@@ -4,6 +4,21 @@
 
 const path = require('path')
 
+
+// 添加tokent 时需要添加
+const ssoproxy = require('webpack-dev-server-ssoproxy')({
+  host: process.env.SSO_PROXY_HOST,
+  port: process.env.SSO_PROXY_PORT,
+  userName: process.env.SSO_PROXY_USERNAME,
+  password: process.env.SSO_PROXY_PASSWORD,
+  nonce: process.env.SSO_PROXY_NONCE,
+  // outputDir: 'src',
+  // dbgJsSuffix: '-dev_dbg.js',
+  clientId: 0,
+  context: [ // TODO 需要根据当前项目的SERVER端替换来自于《信采》的配置。
+      '/api/v2/integral/'
+  ]
+});
 module.exports = {
   dev: {
 
@@ -11,15 +26,29 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
    
-    proxyTable: {
-      '/api': {
-          target: 'http://192.168.40.199:7921',
-          changeOrigin: true,
-          pathRewrite: {
-              '^/api': 'http://192.168.40.199:7921'
-          }
+    // proxyTable: {
+    //   '/api': {
+    //       target: 'http://192.168.40.199:7921',
+    //       changeOrigin: true,
+    //       pathRewrite: {
+    //           '^/api': 'http://192.168.40.199:7921'
+    //       }
+    //   }
+    // },
+
+    // 添加tokent 时需要添加
+    before: ssoproxy.before,
+    proxyTable: [{
+      context: ssoproxy.context,
+      target: ssoproxy.targetUrl,
+      onProxyReq: ssoproxy.proxy.onProxyReq,
+      onProxyRes: ssoproxy.proxy.onProxyRes,
+      onError: ssoproxy.proxy.onError,
+      pathRewrite(path){
+        console.log(path);
+          return path;
       }
-    },
+    }],
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
