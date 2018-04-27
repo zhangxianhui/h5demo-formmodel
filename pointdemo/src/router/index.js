@@ -4,7 +4,6 @@ import HelloWorld from '@/components/HelloWorld'
 
 import Theme from '@/components/Theme'
 import Point from '@/components/Point'
-import SpecialUser from '@/components/SpecialUser'
 import CommonUserStat from '@/components/CommonUserStat'
 import SpecialUserStat from '@/components/SpecialUserStat'
 Vue.use(Router)
@@ -26,11 +25,7 @@ export default new Router({
           name: 'Point',
           component: Point,
         },
-        {
-          path:"/SpecialUser",
-          name: 'SpecialUser',
-          component: SpecialUser,
-        },
+       
         {
           path:"/CommonUserStat",
           name: 'CommonUserStat',

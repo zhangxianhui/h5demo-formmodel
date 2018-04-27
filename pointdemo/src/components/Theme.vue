@@ -7,11 +7,8 @@
             </ul>
         </div>
        <div class="route">
-        
              <router-view/>
-        
        </div>
-       
     </div>
 </template>
 <script>
@@ -20,9 +17,8 @@ export default {
     return {
       list: [
         { title: "积分管理", path: "/Point" },
-        { title: "特殊用户管理", path: "/SpecialUser" },
-         { title: "普通用户统计", path: "/CommonUserStat" },
-          { title: "特殊用户统计", path: "/SpecialUserStat" },
+        { title: "普通用户统计", path: "/CommonUserStat" },
+        { title: "特殊用户统计", path: "/SpecialUserStat" },
       ],
       path:""
      
@@ -34,7 +30,6 @@ export default {
     console.log(this.url);
   },
   mounted() {
-   
    
   },
 

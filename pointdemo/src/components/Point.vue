@@ -28,7 +28,6 @@
             <p><input type="text" placeholder="请输入需要设置的积分兑换值" class="point-input" v-model="Pointinput"></p>
           </div>
         </model>
-
         <model :show="isShowConvert" @close="close" @save="convertsave">
           <div slot="model-header">兑换积分确认</div>
           <div>
@@ -64,8 +63,8 @@ export default {
   created(){
     let arg = this.$route.query;
     console.log("刷新",arg)
-     this.getlist(arg);
-     this.initPoint()
+    //  this.getlist(arg);
+    //  this.initPoint()
   },
   methods: {
     //分页
@@ -103,7 +102,7 @@ export default {
          console.log('arg change!', arg);
         this.tableData = this.getDataByRoute();
       //发送请求这里
-       this.getlist(arg);
+      //  this.getlist(arg);
     },
     getDataByRoute() {
         const query = this.$route.query;

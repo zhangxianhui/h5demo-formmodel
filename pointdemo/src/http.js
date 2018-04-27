@@ -1,9 +1,11 @@
 import axios from 'axios';
 // axios.defaults.baseURL = '/api/api/v2/integral/';
+
+const testurl = '/api';
 const  instance = axios.create({
-  baseURL: '/api/api/v2/integral/',
+  // baseURL: '/api/api/v2/integral/',
+  baseURL: testurl+'/api/v2/integral/',
   timeout: 10000,
-  
 });
 export function get(url, params) {
   console.log("get请求", url)

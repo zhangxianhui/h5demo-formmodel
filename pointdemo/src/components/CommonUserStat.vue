@@ -117,8 +117,8 @@ export default {
       const descString = query.hasOwnProperty("order") // descString   desc 排序字段 0 降 1 升
         ? query.order == 0 ? "ascending" : "descending"
         : "";
-      const timeStart = this.timeStart;
-      const timeEnd = this.timeEnd;
+      const timeStart = this.timeStart ? this.timeStart / 1000 : "";
+      const timeEnd = this.timeEnd ? this.timeEnd / 1000 : "";
       return {
         pageNum,
         pageSize,
