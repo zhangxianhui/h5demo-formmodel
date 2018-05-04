@@ -19,26 +19,26 @@ export default {
         { title: "积分管理", path: "/Point" },
         { title: "普通用户统计", path: "/CommonUserStat" },
         { title: "特殊用户统计", path: "/SpecialUserStat" },
-      ],
-      path:""
-     
-    };
+      ]
+       
+    }
   },
+
   created() {
-     
-      this.url = this.$route.path;
+
+    this.url = this.$route.path;
     console.log(this.url);
   },
   mounted() {
-   
+
   },
 
   deactivated() {
-   
+
   },
   methods: {
     goPath(path){
-       
+      
       this.$router.replace(path);
       this.url = this.$route.path;
     }
@@ -47,9 +47,7 @@ export default {
   watch: {
     path(path){
        console.log("路径发生变化1")
-       console.log(path)
-        // this.url = path;
-       console.log("路径发生变化2")
+     
     }
   }
 };

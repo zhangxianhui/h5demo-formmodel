@@ -9,14 +9,10 @@
 </template>
 
 <script>
-import TopView from '@/components/TopView'
-
-
+import TopView from '@/components/TopView';
 export default {
   components:{
-    TopView,
-    
- 
+    TopView
   },
   name: 'App'
 }
@@ -30,10 +26,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   /* margin-top: 60px; */
- 
-
 }
-/* 居中 */
 #wrap{
   width: 80%;
   margin: 0 auto
