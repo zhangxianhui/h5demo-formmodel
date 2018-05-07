@@ -1,9 +1,7 @@
 import axios from 'axios';
-const testurl = '/api';
 const  instance = axios.create({
-  //  baseURL: testurl+'/api/v2/integral/',
   baseURL: '/api/v2/integral/',
- 
+  // baseURL:'""'  //打包需要置空
 });
 export function get(url, params) {
   

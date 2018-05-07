@@ -15,7 +15,7 @@ const ssoproxy = require('webpack-dev-server-ssoproxy')({
   // outputDir: 'src',
   // dbgJsSuffix: '-dev_dbg.js',
   clientId: 0,
-  context: [ // TODO 需要根据当前项目的SERVER端替换来自于《信采》的配置。
+  context: [ 
       '/api/v2/integral/'
   ]
 });
@@ -76,12 +76,12 @@ module.exports = {
 
   build: {
     // Template for index.html
-    index: path.resolve(__dirname, '../dist/index.html'),
+    index: path.resolve(__dirname, '../dist/admin.html'),
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsSubDirectory: 'bundle/admin',  
+    assetsPublicPath: '/views/integral/', // server path
 
     /**
      * Source Maps

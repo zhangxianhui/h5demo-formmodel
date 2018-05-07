@@ -3,7 +3,7 @@
    <div id="wrap">
       <top-view></top-view>
     <!-- <side-menu></side-menu> -->
-    <router-view/>
+  <router-view/>
    </div>
   </div>
 </template>

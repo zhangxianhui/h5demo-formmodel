@@ -12,17 +12,19 @@
             </el-date-picker>
             <span class="span-btn" @click="search">查询</span>
         </div>
-        <div>
-            <el-table :data="list" style="width: 100%" stripe  @sort-change="handleSortChange" :default-sort="{prop: tableData.type, order: tableData.descString}">
+        <div class="test-table">
+            <el-table class="table" :data="list" style="width: 100%" stripe  @sort-change="handleSortChange" :default-sort="{prop: tableData.type, order: tableData.descString}">
                 <el-table-column prop="name" label="姓名"> </el-table-column>              
                 <el-table-column prop="read" label="阅读数" sortable="false"></el-table-column>               
                 <el-table-column prop="comment" label="评论数" sortable="false"> </el-table-column> 
                 <el-table-column prop="forward" label="转发数" sortable="false"> </el-table-column>  
                 <el-table-column prop="count1" label="转发+评论"> </el-table-column>              
                 <el-table-column prop="count2"label="总合计"> </el-table-column>                                 
-		    </el-table>
-            <el-pagination background @current-change="handleCurrentChange" :current-page="tableData.pageNum" :page-size="tableData.pageSize" :total="total" layout="total, prev, pager, next, jumper">
-            </el-pagination>
+		        </el-table>
+            <div class="pagination">
+              <el-pagination background @current-change="handleCurrentChange" :current-page="tableData.pageNum" :page-size="tableData.pageSize" :total="total" layout="total, prev, pager, next, jumper">
+              </el-pagination>
+            </div>
         </div>
        
       
@@ -152,9 +154,11 @@ export default {
   }
 };
 </script>
-<style>
-/* 表格 */
-.el-table th > .cell {
+
+
+<style scoped>
+
+.test-table >>> th > .cell {
   position: relative;
   word-wrap: normal;
   text-overflow: ellipsis;
@@ -165,7 +169,8 @@ export default {
   text-align: center;
   color: #f1f6fc;
 }
-.el-table th {
+
+.test-table >>> th {
   white-space: nowrap;
   overflow: hidden;
   -webkit-user-select: none;
@@ -175,15 +180,15 @@ export default {
   text-align: left;
   background: #2269b3;
 }
-.el-pagination {
+.pagination >>> .el-pagination {
   white-space: nowrap;
   padding: 2px 5px;
   color: #303133;
   font-weight: 1000;
   margin: 50px 20px;
 }
-.el-table td,
-.el-table th {
+.test-table >>> td,
+.test-table >>> th {
   padding: 6px 0;
   min-width: 0;
   -webkit-box-sizing: border-box;
@@ -192,9 +197,7 @@ export default {
   vertical-align: middle;
   position: relative;
 }
-</style>
 
-<style scoped>
 .wrap {
   margin-left: 20px;
 }

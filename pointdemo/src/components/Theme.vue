@@ -7,7 +7,7 @@
             </ul>
         </div>
        <div class="route">
-             <router-view/>
+           <router-view/>
        </div>
     </div>
 </template>

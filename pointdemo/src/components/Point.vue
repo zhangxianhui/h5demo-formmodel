@@ -5,7 +5,7 @@
             <p class="point-span"><span>积分兑换值</span><span>{{pointValue}}</span> <span class="set" @click="setPoint">设置</span></p>
        </div>
         <div>
-            <el-table :data="list" style="width: 100%" stripe  @sort-change="handleSortChange" :default-sort="{prop: tableData.type, order: tableData.descString}">
+            <el-table class="test-table" :data="list" style="width: 100%" stripe  @sort-change="handleSortChange" :default-sort="{prop: tableData.type, order: tableData.descString}">
                 <el-table-column prop="name" label="姓名">
                 </el-table-column>
                 <el-table-column prop="shortName" label="部门">
@@ -18,8 +18,10 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-pagination background @current-change="handleCurrentChange" :current-page="tableData.pageNum" :page-size="tableData.pageSize" :total="total" layout="total, prev, pager, next, jumper">
-            </el-pagination>
+            <div class="pagination">
+              <el-pagination   background @current-change="handleCurrentChange" :current-page="tableData.pageNum" :page-size="tableData.pageSize" :total="total" layout="total, prev, pager, next, jumper">
+             </el-pagination>
+            </div>
         </div>
         <model :show="isShowMOdel" @close="close" @save="setPointSave">
           <div slot="model-header">兑换设置</div>
@@ -45,7 +47,6 @@ export default {
   },
   data() {
     const d = this.getDataByRoute();
-    // console.log('dddd =>', d);
     const ret = {
         list: [],
         total: 50,
@@ -57,7 +58,6 @@ export default {
         userId: "",
         initOrder: {}
     };
-    // console.log('data ->', ret);
     return ret;
   },
 
@@ -67,6 +67,7 @@ export default {
       this.getlist(arg);
       this.initPoint()
   },
+ 
   methods: {
     //分页
     handleCurrentChange: function(page) {
@@ -139,31 +140,37 @@ export default {
     },
     convertsave() {
       this.isShowConvert = false;
-      this.getConver();
+      this.getConverPort();
     },
     setPointSave() {
       this.isShowMOdel = false;
-      this.getsetPoint()
+      this.getPointPort()
     },
     //请求设置积分接口
-    getsetPoint() {
+    getPointPort() {
       this.$put(`updateIntegral?integralModification=${this.Pointinput}`).then(
-        response => {
+        // response => {
+        //   this.pointValue = this.Pointinput;
+        //   this.$message({
+        //     showClose: true,
+        //     message:response.message,
+        //     type: 'success'
+        //   })
+        // }
+        ({message}) => {
           this.pointValue = this.Pointinput;
           this.$message({
             showClose: true,
-            message:response.message,
+            message,
             type: 'success'
           })
         }
       )
     },
     //请求兑换的接口
-    getConver() {
+    getConverPort() {
         this.$put(`removeUserIntegralByUserId?userId=${this.userId}&integral=${this.pointValue}`).then(
             response => {
-              
-            console.log("兑换操作",response.out)
             this.$message({
                     showClose: true,
                     message:response.message,
@@ -201,9 +208,11 @@ export default {
   }
 };
 </script>
-<style>
+
+
+<style scoped>
 /* 表格 */
-.el-table th > .cell {
+.test-table >>> th > .cell {
   position: relative;
   word-wrap: normal;
   text-overflow: ellipsis;
@@ -214,7 +223,8 @@ export default {
   text-align: center;
   color: #f1f6fc;
 }
-.el-table th {
+
+.test-table >>> th {
   white-space: nowrap;
   overflow: hidden;
   -webkit-user-select: none;
@@ -224,15 +234,15 @@ export default {
   text-align: left;
   background: #2269b3;
 }
-.el-pagination {
+.pagination >>> .el-pagination {
   white-space: nowrap;
   padding: 2px 5px;
   color: #303133;
   font-weight: 1000;
   margin: 50px 20px;
 }
-.el-table td,
-.el-table th {
+.test-table >>> td,
+.test-table >>> th {
   padding: 6px 0;
   min-width: 0;
   -webkit-box-sizing: border-box;
@@ -242,9 +252,10 @@ export default {
   position: relative;
 }
 
-</style>
 
-<style scoped>
+
+
+
 .wrap {
   margin-left: 20px;
 }
