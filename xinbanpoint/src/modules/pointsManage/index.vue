@@ -68,6 +68,7 @@ margin-left: -40px;
   line-height: 35px;
   margin-right: 15px;
   padding: 0 10px;
+  cursor: pointer;
   
 }
 .title .active {

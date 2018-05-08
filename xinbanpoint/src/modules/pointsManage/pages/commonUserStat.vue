@@ -68,7 +68,7 @@ export default {
     return ret;
   },
   created() {
-        let arg = this.$route.query;
+        let arg = this.tableData;
         this.getlist(arg);
   },
   methods: {

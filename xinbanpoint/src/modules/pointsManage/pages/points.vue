@@ -54,7 +54,7 @@ export default {
         tableData: d,
         isShowMOdel: false,
         isShowConvert: false,
-        pointValue: "100",
+        pointValue: "",
         Pointinput: "",
         userId: "",
         initOrder: {},
@@ -65,13 +65,10 @@ export default {
   },
 
   created(){
-    let arg = this.$route.query;
-    // console.log("刷新",arg)
+      let arg = this.tableData;
       this.getlist(arg);
       this.initPoint()
-     
   },
- 
   methods: {
     //分页
     handleCurrentChange: function(page) {
@@ -126,10 +123,12 @@ export default {
     },
     //请求列表
     getlist(arg) {
+      console.log("arg====>",arg)
       pointsManage.getQueryList(arg)
         .then(({vos,total}) => {
           this.list = vos;
           this.total = total;
+          console.log("vos===>",vos)
       })
     },
 
@@ -217,11 +216,8 @@ export default {
     //监听路由变化调用方法
     $route: "routeChange",
     Pointinput:function(){
-      if(this.Pointinput==""){
-         this.isDisable =true
-      }else{
-        this.isDisable =false
-      }
+     
+      this.Pointinput=="" ? this.isDisable =true : this.isDisable =false
     }
   }
 };
@@ -273,8 +269,6 @@ export default {
  background: #5a5957;
  cursor: text;
 }
-
-
 
 
 .wrap {
