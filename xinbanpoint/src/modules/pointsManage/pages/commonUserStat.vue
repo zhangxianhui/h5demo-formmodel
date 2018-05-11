@@ -51,6 +51,7 @@ export default {
       initOrder: {},
       timeStart: "",
       timeEnd: "",
+     
       startDate: {
         disabledDate: time => {
           return time.getTime() > Date.now();
@@ -73,7 +74,7 @@ export default {
           return timeSpace;
         }
       },
-      nameStr: ""
+      nameStr: d.nameStr,
     };
 
     return ret;
@@ -89,7 +90,8 @@ export default {
       const vm = this;
       const newQuery = {
         pageNum: page,
-        pageSize: vm.tableData.pageSize
+        pageSize: vm.tableData.pageSize,
+        nameStr:vm.nameStr
       };
       vm.tableData.type && (newQuery.type = vm.tableData.type);
       vm.tableData.descString &&
@@ -101,11 +103,12 @@ export default {
       const vm = this;
       if (prop === vm.tableData.type && vm.tableData.descString === order)
         return;
-      const newQuery = { pageNum: 1, pageSize: vm.tableData.pageSize };
+      const newQuery = { pageNum: 1, pageSize: vm.tableData.pageSize,nameStr:vm.tableData.nameStr};
       if (prop) {
         newQuery.type = prop;
         newQuery.order = order === "descending" ? "0" : "1";
       }
+      console.log(newQuery)
       this.changeRoute(newQuery);
     },
     //监听路由方法
@@ -114,6 +117,7 @@ export default {
     },
     routeChange(query) {
       const arg = query.query;
+      console.log("请求参数",arg)
       this.tableData = this.getDataByRoute();
       //发送请求这里
       this.getlist(arg);
@@ -129,13 +133,15 @@ export default {
         : "descending";
       const timeStart = this.timeStart ? this.timeStart / 1000 : "";
       const timeEnd = this.timeEnd ? this.timeEnd / 1000 : "";
+       const nameStr = query.nameStr || ""
       return {
         pageNum,
         pageSize,
         type,
         descString,
         timeStart,
-        timeEnd
+        timeEnd,
+        nameStr
       };
     },
     search() {
@@ -154,6 +160,7 @@ export default {
     //请求列表
     getlist(arg) {
       pointsManage.getOrdinaryUserStatList(arg).then(({ vos, total }) => {
+        console.log(vos)
         this.list = vos;
         this.total = total;
       });
@@ -162,14 +169,16 @@ export default {
       const dataname = {
         nameStr: name
       };
-      this.getlist(dataname);
+      // this.getlist(dataname);
+      this.changeRoute(dataname);
     },
     //回车搜索
     searchName(name) {
       const dataname = {
         nameStr: name
       };
-      this.getlist(dataname);
+      // this.getlist(dataname);
+        this.changeRoute(dataname);
     },
     //重置
     reset(name) {

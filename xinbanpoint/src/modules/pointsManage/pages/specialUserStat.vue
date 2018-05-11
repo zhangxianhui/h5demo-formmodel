@@ -69,7 +69,7 @@ export default {
         //   }
         // }
       },
-      nameStr: ""
+      nameStr: d.nameStr,
     };
     return ret;
   },
@@ -83,7 +83,8 @@ export default {
       const vm = this;
       const newQuery = {
         pageNum: page,
-        pageSize: vm.tableData.pageSize
+        pageSize: vm.tableData.pageSize,
+        nameStr:vm.nameStr
       };
       vm.tableData.type && (newQuery.type = vm.tableData.type);
       vm.tableData.descString &&
@@ -95,7 +96,7 @@ export default {
       const vm = this;
       if (prop === vm.tableData.type && vm.tableData.descString === order)
         return;
-      const newQuery = { pageNum: 1, pageSize: vm.tableData.pageSize };
+      const newQuery = { pageNum: 1, pageSize: vm.tableData.pageSize , nameStr:vm.tableData.nameStr};
       if (prop) {
         newQuery.type = prop;
         newQuery.order = order === "descending" ? "0" : "1";
@@ -124,13 +125,15 @@ export default {
         : "descending";
       const timeStart = this.timeStart ? this.timeStart / 1000 : "";
       const timeEnd = this.timeEnd ? this.timeEnd / 1000 : "";
+      const nameStr = query.nameStr || ""
       return {
         pageNum,
         pageSize,
         type,
         descString,
         timeStart,
-        timeEnd
+        timeEnd,
+        nameStr
       };
     },
     search() {
@@ -148,6 +151,7 @@ export default {
     //请求列表
     getlist(arg) {
       pointsManage.getSpecialUserStatList(arg).then(({ vos, total }) => {
+        console.log(vos)
         this.list = vos;
         this.total = total;
       });
@@ -156,7 +160,7 @@ export default {
       const dataname = {
         nameStr: name
       };
-      this.getlist(dataname);
+       this.changeRoute(dataname);
     },
     //回车搜索
     searchName(name) {
@@ -175,8 +179,6 @@ export default {
       };
       this.getlist(dataname);
     },
-    //操作 兑换
-
     //操作 兑换
     handleConvert(index, row) {
       this.userId = row.id;

@@ -59,6 +59,7 @@ export default {
       list: [],
       total: 50,
       tableData: d,
+     
       isShowMOdel: false,
       isShowConvert: false,
       pointValue: "",
@@ -66,14 +67,15 @@ export default {
       userId: "",
       initOrder: {},
       isDisable: false,
-      nameStr: ""
+      nameStr: d.nameStr
+    
     };
     // console.log('data ->', ret);
     return ret;
   },
 
   created() {
-    //  let arg = this.tableData;
+     let arg = this.tableData;
     const query = this.$route.query;
     console.log("arggggg===", query);
     this.getlist(query);
@@ -86,11 +88,12 @@ export default {
       const vm = this;
       const newQuery = {
         pageNum: page,
-        pageSize: vm.tableData.pageSize
+        pageSize: vm.tableData.pageSize,
+        nameStr:vm.nameStr
       };
       vm.tableData.type && (newQuery.type = vm.tableData.type);
-      vm.tableData.descString &&
-        (newQuery.order = vm.tableData.descString === "descending" ? 0 : 1);
+      vm.tableData.descString &&(newQuery.order = vm.tableData.descString === "descending" ? 0 : 1);
+      console.log("分页，==",newQuery)
       this.changeRoute(newQuery);
     },
     //点击排序
@@ -98,7 +101,7 @@ export default {
       const vm = this;
       if (prop === vm.tableData.type && vm.tableData.descString === order)
         return;
-      const newQuery = { pageNum: 1, pageSize: vm.tableData.pageSize };
+      const newQuery = { pageNum: 1, pageSize: vm.tableData.pageSize, nameStr:vm.tableData.nameStr};
       if (prop) {
         newQuery.type = prop;
         newQuery.order = order === "descending" ? "0" : "1";
@@ -126,11 +129,13 @@ export default {
       const descString = query.hasOwnProperty("order")
         ? query.order == 0 ? "descending" : "ascending"
         : "descending";
+      const nameStr = query.nameStr || ""
       return {
         pageNum,
         pageSize,
         type,
-        descString
+        descString,
+        nameStr
       };
     },
     //请求列表
@@ -147,14 +152,16 @@ export default {
       const dataname = {
         nameStr: name
       };
-      this.getlist(dataname);
+      // this.getlist(dataname);
+       this.changeRoute(dataname);
     },
     //回车搜索
     searchName(name) {
       const dataname = {
         nameStr: name
       };
-      this.getlist(dataname);
+      // this.getlist(dataname);
+      this.changeRoute(dataname);
     },
     //重置
     reset(name) {
@@ -253,6 +260,10 @@ export default {
   watch: {
     //监听路由变化调用方法
     $route: "routeChange",
+    //  $route: {
+    //    immediate:true,
+    //    handler:'routeChange'
+    //  },
     Pointinput: function() {
       this.Pointinput == ""
         ? (this.isDisable = true)
