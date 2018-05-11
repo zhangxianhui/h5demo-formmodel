@@ -18,7 +18,7 @@ module.exports = {
             changeOrigin: true,
             onProxyReq: (proxyReq, req) => {
               const headers = {
-                'AUTHORIZATION':'bearer jvpfhp4npv222MP_5w4WnBQYy5eFdhlCjEWf8DTXOtrr15mR',
+                'AUTHORIZATION':'bearer z1j4uBHUC_7ol2WJxV20A_K_BDuz88YWgW1p4PQQjMUP5nUu',
                 'DOMAIN-ID':2,
                 'NETWORK-ID':3
               }

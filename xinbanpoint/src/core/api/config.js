@@ -1,3 +1,5 @@
+require('es6-promise').polyfill();
+
 import axios from 'axios'
 
 const axiosInstance = axios.create({

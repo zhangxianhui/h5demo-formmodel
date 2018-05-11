@@ -112,7 +112,7 @@ export default {
   left: 0;
   bottom: 0;
   right: 0;
-  z-index: 50001;
+  z-index: 5000;
   background: rgba(0, 0, 0, 0.5);
 }
 .fade-enter-active,

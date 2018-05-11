@@ -47,130 +47,136 @@
 </template>
 <script>
 import Model from "@/share/components/Model";
-import { pointsManage } from "../../../core/api";
+import { pointsManage } from '../../../core/api';
 export default {
   components: {
     Model
   },
   data() {
     const d = this.getDataByRoute();
-    console.log("d===", d);
+    console.log("d===",d)
     const ret = {
-      list: [],
-      total: 50,
-      tableData: d,
-      isShowMOdel: false,
-      isShowConvert: false,
-      pointValue: "",
-      Pointinput: "",
-      userId: "",
-      initOrder: {},
-      isDisable: false,
-      nameStr: ""
+        list: [],
+        total: 50,
+        tableData: d,
+        isShowMOdel: false,
+        isShowConvert: false,
+        pointValue:"",
+        Pointinput: "",
+        userId: "",
+        initOrder: {},
+        isDisable:false,
+        nameStr:""
+       
     };
     // console.log('data ->', ret);
     return ret;
   },
 
-  created() {
-    //  let arg = this.tableData;
-    const query = this.$route.query;
-    console.log("arggggg===", query);
-    this.getlist(query);
-    this.initPoint();
+  created(){
+      //  let arg = this.tableData;
+      const query = this.$route.query;
+      console.log('arggggg===',query)
+      this.getlist(query);
+      this.initPoint()
   },
 
   methods: {
     //分页
     handleCurrentChange: function(page) {
-      const vm = this;
-      const newQuery = {
-        pageNum: page,
-        pageSize: vm.tableData.pageSize
-      };
-      vm.tableData.type && (newQuery.type = vm.tableData.type);
-      vm.tableData.descString &&
-        (newQuery.order = vm.tableData.descString === "descending" ? 0 : 1);
-      this.changeRoute(newQuery);
+        const vm = this
+        const newQuery = {
+            pageNum:page,
+            pageSize: vm.tableData.pageSize,
+         
+            
+        };
+        vm.tableData.type && (newQuery.type = vm.tableData.type);
+        vm.tableData.descString && (newQuery.order = vm.tableData.descString === 'descending' ? 0 : 1);
+        this.changeRoute(newQuery);
+
     },
     //点击排序
     handleSortChange: function({ column, prop, order }) {
-      const vm = this;
-      if (prop === vm.tableData.type && vm.tableData.descString === order)
-        return;
-      const newQuery = { pageNum: 1, pageSize: vm.tableData.pageSize };
-      if (prop) {
-        newQuery.type = prop;
-        newQuery.order = order === "descending" ? "0" : "1";
-      }
-      this.changeRoute(newQuery);
+        const vm = this;
+        if (prop === vm.tableData.type && vm.tableData.descString === order) return;
+        const newQuery = { pageNum: 1, pageSize: vm.tableData.pageSize,};
+        if (prop) {
+            newQuery.type = prop;
+            newQuery.order = order === 'descending' ? '0' : '1';        
+        }
+        this.changeRoute(newQuery)
     },
     //监听路由方法
     changeRoute(query) {
       this.$router.push({ query });
     },
     routeChange(query) {
-      console.log("query change!", query);
-      const arg = query.query;
-      this.tableData = this.getDataByRoute();
+        console.log('query change!', query);
+        const arg = query.query;
+        this.tableData = this.getDataByRoute();
       //发送请求这里
-      console.log("发请求!", arg);
+       console.log('发请求!', arg);
       this.getlist(arg);
     },
     getDataByRoute() {
-      const query = this.$route.query;
-      console.log("数据变化====》", query);
-      const pageNum = query.pageNum ? Number(query.pageNum) : 1;
-      const pageSize = query.pageSize ? Number(query.pageSize) : 20;
-      const type = query.type || "integral";
-      const descString = query.hasOwnProperty("order")
-        ? query.order == 0 ? "descending" : "ascending"
-        : "descending";
-      return {
-        pageNum,
-        pageSize,
-        type,
-        descString
-      };
+        const query = this.$route.query;
+         console.log("数据变化====》",query)
+        const pageNum = query.pageNum ? Number(query.pageNum) : 1; 
+        const pageSize = query.pageSize ? Number(query.pageSize) : 20; 
+        const type = query.type || 'integral'; 
+        const descString = query.hasOwnProperty('order')
+            ? query.order == 0
+                ? 'descending'
+                : 'ascending'
+            : 'descending';
+        return {
+            pageNum,
+            pageSize,
+            type,
+            descString
+        }
     },
     //请求列表
     getlist(arg) {
-      console.log("arg====>", arg);
-      pointsManage.getQueryList(arg).then(({ vos, total }) => {
-        this.list = vos;
-        this.total = total;
-        console.log("vos===>", vos);
-      });
+      console.log("arg====>",arg)
+      pointsManage.getQueryList(arg)
+        .then(({vos,total}) => {
+          this.list = vos;
+          this.total = total;
+          console.log("vos===>",vos)
+      })
     },
     //姓名搜索
-    nameSearch(name) {
-      const dataname = {
-        nameStr: name
-      };
-      this.getlist(dataname);
+    nameSearch(name){
+      const dataname ={
+        nameStr:name
+      }
+        this.getlist(dataname)
     },
     //回车搜索
-    searchName(name) {
-      const dataname = {
-        nameStr: name
-      };
-      this.getlist(dataname);
+    searchName(name){
+         const dataname ={
+        nameStr:name
+      }
+        this.getlist(dataname)
     },
     //重置
-    reset(name) {
-      this.nameStr = "";
-      const dataname = {
-        nameStr: this.nameStr
-      };
-      this.getlist(dataname);
+    reset(name){
+        this.nameStr = ''
+        const dataname ={
+          nameStr:this.nameStr
+        }
+        this.getlist(dataname)
     },
 
     //点击设置 弹框
     setPoint() {
       this.isShowMOdel = true;
-      this.Pointinput = this.pointValue;
+      this.Pointinput =  this.pointValue
+      
     },
-
+    
     close() {
       this.isShowMOdel = false;
       this.isShowConvert = false;
@@ -180,68 +186,72 @@ export default {
       this.getConverPort();
     },
     setPointSave() {
-      var reg = /^[1-9]\d*$/;
-      if (this.Pointinput == "") {
-      } else if (!reg.test(this.Pointinput)) {
-        alert("请输入正整数");
-      } else if (this.Pointinput.length > 10) {
-        this.$message({
-          message: "积分数值已超过最大值，请重新输入",
-          type: "warning"
-        });
-      } else {
+       var reg = /^[1-9]\d*$/
+      if(this.Pointinput == ""){
+          
+      } else if(!reg.test(this.Pointinput )){
+          alert("请输入正整数")
+      } else if(this.Pointinput.length>10){
+      
+         this.$message({
+          message:'积分数值已超过最大值，请重新输入',
+          type: 'warning'
+         });
+      }
+      else{
         this.isShowMOdel = false;
-        this.getPointPort();
+        this.getPointPort()
       }
     },
     //请求设置积分接口
     getPointPort() {
-      pointsManage.setPointQuota(this.Pointinput).then(({ message }) => {
-        this.pointValue = this.Pointinput;
-        this.$message({
-          showClose: true,
-          message,
-          type: "success"
-        });
-      });
-    },
-    //请求兑换的接口
-    getConverPort() {
-      pointsManage
-        .redeemPoint(this.userId, this.pointValue)
-        // .then(response=>{
-        //   console.log("兑换response",response)
-        // })
-        .then(({ message, out }) => {
-          console.log("兑换信息", message);
+      pointsManage.setPointQuota(this.Pointinput)
+        .then(({ message }) => {
+          this.pointValue = this.Pointinput;
           this.$message({
             showClose: true,
             message,
-            type: "success"
-          });
-          this.list = this.list.map(item => {
-            return item.id === this.userId
-              ? Object.assign({}, item, { integral: out })
-              : item;
-          });
+            type: 'success'
+          })
         })
-        .catch(error => {
-          const errmess = error.response.data.errors.message;
-          if (error.response.data.errors) {
+
+    },
+    //请求兑换的接口
+    getConverPort() {
+        pointsManage.redeemPoint(this.userId, this.pointValue)
+        // .then(response=>{
+        //   console.log("兑换response",response)
+        // })
+          .then(({message, out}) => {
+            console.log("兑换信息",message)
             this.$message({
-              showClose: true,
-              message: errmess,
-              type: "warning"
-            });
-          }
-        });
+                    showClose: true,
+                    message,
+                    type: 'success'
+                })
+                this.list = this.list.map(item => {
+                  return item.id === this.userId
+                    ? Object.assign({}, item, {integral: out})
+                    : item;
+                })
+          }).catch(error => {
+              const errmess = error.response.data.errors.message
+              if(error.response.data.errors){
+                  this.$message({
+                      showClose: true,
+                      message:errmess,
+                      type: 'warning'
+                  })
+              }
+          })
     },
     //初始化积分值
     initPoint() {
-      pointsManage.getSelectExchangePoint().then(({ exchange }) => {
-        this.pointValue = exchange;
-        this.Pointinput = this.pointValue;
-      });
+      pointsManage.getSelectExchangePoint()
+        .then(({exchange}) => {
+          this.pointValue = exchange;
+           this.Pointinput = this.pointValue
+        })
     },
     //操作 兑换
     handleConvert(index, row) {
@@ -253,11 +263,10 @@ export default {
   watch: {
     //监听路由变化调用方法
     $route: "routeChange",
-    Pointinput: function() {
-      this.Pointinput == ""
-        ? (this.isDisable = true)
-        : (this.isDisable = false);
+    Pointinput:function(){
+      this.Pointinput=="" ? this.isDisable =true : this.isDisable =false
     }
+   
   }
 };
 </script>
@@ -265,7 +274,7 @@ export default {
 
 <style scoped>
 /* 表格 */
-.test-table>>>th > .cell {
+.test-table >>> th > .cell {
   position: relative;
   word-wrap: normal;
   text-overflow: ellipsis;
@@ -277,7 +286,7 @@ export default {
   color: #f1f6fc;
 }
 
-.test-table>>>th {
+.test-table >>> th {
   white-space: nowrap;
   overflow: hidden;
   -webkit-user-select: none;
@@ -287,15 +296,15 @@ export default {
   text-align: left;
   background: #2269b3;
 }
-.pagination>>>.el-pagination {
+.pagination >>> .el-pagination {
   white-space: nowrap;
   padding: 2px 5px;
   color: #303133;
   font-weight: 1000;
   margin: 50px 20px;
 }
-.test-table>>>td,
-.test-table>>>th {
+.test-table >>> td,
+.test-table >>> th {
   padding: 6px 0;
   min-width: 0;
   -webkit-box-sizing: border-box;
@@ -304,10 +313,11 @@ export default {
   vertical-align: middle;
   position: relative;
 }
-.test-model>>>.submit {
-  background: #5a5957;
-  cursor: text;
+.test-model >>> .submit{
+ background: #5a5957;
+ cursor: text;
 }
+
 
 .wrap {
   margin-left: 20px;
@@ -340,9 +350,9 @@ export default {
   cursor: pointer;
   text-align: center;
 }
-.search {
-  border-radius: 5px;
-  height: 35px;
+.search{
+ border-radius:5px;
+ height: 35px;
   line-height: 35px;
   margin-left: 10px;
 }
@@ -353,12 +363,12 @@ export default {
   width: 80%;
   border: 1px solid #ccc;
 }
-.search-input {
-  width: 40%;
-  padding: 10px 0 10px 10px;
-  border-radius: 5px;
+.search-input{
+   width: 40%;
+     padding: 10px 0 10px 10px;
+   border-radius: 5px;
 }
-.search-p {
+.search-p{
   margin-left: 600px;
 }
 .model-span {
